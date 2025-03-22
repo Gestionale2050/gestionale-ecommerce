@@ -17,10 +17,25 @@
       padding: 1rem;
       text-align: center;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
     }
     h1 {
       margin: 0;
       font-size: 1.5rem;
+      flex: 1;
+    }
+    .add-btn {
+      margin-left: auto;
+      padding: 0.5rem 1rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
     }
     nav {
       display: flex;
@@ -39,7 +54,7 @@
     }
     iframe {
       width: 100%;
-      height: calc(100vh - 140px);
+      height: calc(100vh - 160px);
       border: none;
     }
   </style>
@@ -47,6 +62,7 @@
 <body>
   <header>
     <h1>📊 Gestionale E-commerce</h1>
+    <button class="add-btn" onclick="window.open('https://script.google.com/macros/s/AKfycbxvh6Nc2xZqfyZAx16ZvAH8cTj4aRDpNTVz4cUWEz5nzin1w58_cuuKyv5abBo5pE8K/exec', '_blank')">➕ Aggiungi Prodotto</button>
   </header>
   <nav>
     <button onclick="loadSheet('prodotti')">Prodotti</button>
@@ -70,7 +86,6 @@
       document.getElementById("sheetFrame").src = sheets[key];
     }
 
-    // Carica default
     loadSheet('prodotti');
   </script>
 </body>

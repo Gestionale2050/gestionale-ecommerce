@@ -27,8 +27,11 @@
       font-size: 1.5rem;
       flex: 1;
     }
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
     .add-btn {
-      margin-left: auto;
       padding: 0.5rem 1rem;
       background-color: #007bff;
       color: white;
@@ -62,7 +65,10 @@
 <body>
   <header>
     <h1>📊 Gestionale E-commerce</h1>
-    <button class="add-btn" onclick="window.open('https://script.google.com/macros/s/AKfycbxvh6Nc2xZqfyZAx16ZvAH8cTj4aRDpNTVz4cUWEz5nzin1w58_cuuKyv5abBo5pE8K/exec', '_blank')">➕ Aggiungi Prodotto</button>
+    <div class="actions">
+      <button class="add-btn" onclick="window.open('https://script.google.com/macros/s/AKfycbxvh6Nc2xZqfyZAx16ZvAH8cTj4aRDpNTVz4cUWEz5nzin1w58_cuuKyv5abBo5pE8K/exec', '_blank')">➕ Prodotto</button>
+      <button class="add-btn" onclick="window.open('https://script.google.com/macros/s/AKfycbwvCo8uF7fbrnrsszAiktZx3R2VEj4EDqPkYmfno0H2p9HQA-jeRvM5Lay8j0pHjRZJ/exec', '_blank')">➕ Ordine</button>
+    </div>
   </header>
   <nav>
     <button onclick="loadSheet('prodotti')">Prodotti</button>

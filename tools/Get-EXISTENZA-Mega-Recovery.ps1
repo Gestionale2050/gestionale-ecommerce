@@ -1,81 +1,22 @@
 #requires -Version 5.1
 [CmdletBinding()]
-param(
-    [string]$Destination = "$HOME\Downloads\Invoke-EXISTENZA-Mega-Recovery-v1_0_0.ps1"
-)
+param()
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
-$ProgressPreference = "SilentlyContinue"
 
-$ExpectedHash = "300c968d100be3088eee820a9a8ba7a0e2fcd6aece10bae6f0ef37d8fcfa41dc"
-$BaseUrl = "https://raw.githubusercontent.com/Gestionale2050/gestionale-ecommerce/artifact/existenza-recovery/tools/existenza-recovery-payload-gzip"
+throw @"
+ARTEFATTO IN QUARANTENA — NON UTILIZZARE.
 
-Write-Host "Recupero del mega script EXISTENZA..." -ForegroundColor Cyan
+Il payload pubblicato in questo branch non ricostruisce il file autorizzato.
 
-$Builder = New-Object System.Text.StringBuilder
-foreach ($Index in 1..3) {
-    $Name = "part-{0:D2}.b64" -f $Index
-    $Url = "$BaseUrl/$Name"
-    Write-Host "  Download $Name" -ForegroundColor DarkCyan
-    $Part = (Invoke-WebRequest -UseBasicParsing -Uri $Url -TimeoutSec 60).Content.Trim()
-    if ([string]::IsNullOrWhiteSpace($Part)) {
-        throw "Payload vuoto: $Url"
-    }
-    [void]$Builder.Append($Part)
-}
+Hash autorizzato atteso:
+300c968d100be3088eee820a9a8ba7a0e2fcd6aece10bae6f0ef37d8fcfa41dc
 
-$CompressedBytes = [Convert]::FromBase64String($Builder.ToString())
-$CompressedStream = New-Object System.IO.MemoryStream(,$CompressedBytes)
-$GzipStream = New-Object System.IO.Compression.GZipStream(
-    $CompressedStream,
-    [System.IO.Compression.CompressionMode]::Decompress
-)
-$OutputStream = New-Object System.IO.MemoryStream
+Hash ottenuto dal payload GZip:
+d18f355c4897a46a3b794579b37ace882a94e2d02571778be7dd8f1b4d1d0ca9
 
-try {
-    $Buffer = New-Object byte[] 81920
-    while (($Read = $GzipStream.Read($Buffer, 0, $Buffer.Length)) -gt 0) {
-        $OutputStream.Write($Buffer, 0, $Read)
-    }
-    $ScriptBytes = $OutputStream.ToArray()
-}
-finally {
-    $GzipStream.Dispose()
-    $CompressedStream.Dispose()
-    $OutputStream.Dispose()
-}
-
-$Parent = Split-Path -Parent $Destination
-if (-not (Test-Path -LiteralPath $Parent -PathType Container)) {
-    New-Item -ItemType Directory -Path $Parent -Force | Out-Null
-}
-
-[System.IO.File]::WriteAllBytes($Destination, $ScriptBytes)
-$ActualHash = (Get-FileHash -LiteralPath $Destination -Algorithm SHA256).Hash.ToLowerInvariant()
-
-if ($ActualHash -ne $ExpectedHash) {
-    Remove-Item -LiteralPath $Destination -Force -ErrorAction SilentlyContinue
-    throw "Integrita non valida. Atteso: $ExpectedHash - Effettivo: $ActualHash"
-}
-
-$Tokens = $null
-$ParseErrors = $null
-[void][System.Management.Automation.Language.Parser]::ParseFile(
-    $Destination,
-    [ref]$Tokens,
-    [ref]$ParseErrors
-)
-if ($ParseErrors.Count -gt 0) {
-    Remove-Item -LiteralPath $Destination -Force -ErrorAction SilentlyContinue
-    $Details = ($ParseErrors | ForEach-Object { $_.Message }) -join " | "
-    throw "Parsing PowerShell fallito: $Details"
-}
-
-Write-Host "" 
-Write-Host "Script creato e verificato:" -ForegroundColor Green
-Write-Host $Destination
-Write-Host "SHA-256: $ActualHash" -ForegroundColor Green
-Write-Host "" 
-Write-Host "Non e stato ancora eseguito. Avvialo inizialmente in modalita baseline:" -ForegroundColor Yellow
-Write-Host ('& "{0}" -ExpectedSelfHash "{1}" -DeepContentScan' -f $Destination, $ExpectedHash)
+Il recupero resta bloccato finché non viene ritrovato o rigenerato da zero un sorgente verificato.
+Non sostituire l'hash atteso. Non eseguire il candidato ricostruito.
+Consultare tools/EXISTENZA_RECOVERY_QUARANTINE.md.
+"@
